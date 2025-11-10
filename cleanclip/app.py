@@ -48,10 +48,20 @@ class PatternEditor(ttk.Toplevel):
         button_frame = ttk.Frame(self)
         button_frame.pack(fill=tk.X, padx=12, pady=(0, 12))
 
-        cancel_btn = ttk.Button(button_frame, text="Cancel", command=self._cancel)
-        cancel_btn.pack(side=tk.RIGHT, padx=(0, 6))
+        cancel_btn = ttk.Button(
+            button_frame,
+            text="Cancel",
+            command=self._cancel,
+            bootstyle="secondary-outline",
+        )
+        cancel_btn.pack(side=tk.RIGHT, padx=(0, 8))
 
-        save_btn = ttk.Button(button_frame, text="Save", bootstyle="success", command=self._save)
+        save_btn = ttk.Button(
+            button_frame,
+            text="Save",
+            bootstyle="success",
+            command=self._save,
+        )
         save_btn.pack(side=tk.RIGHT)
 
     def _populate_text(self) -> None:
@@ -69,6 +79,7 @@ class PatternEditor(ttk.Toplevel):
             messagebox.showerror("Invalid patterns", str(exc), parent=self)
             return
         save_patterns(patterns)
+        self.patterns = patterns
         messagebox.showinfo("Patterns saved", "New patterns stored successfully.", parent=self)
         self.destroy()
 
@@ -79,7 +90,7 @@ def run() -> None:
     load_patterns()  # Ensure configuration exists before building the UI.
 
     app = ttk.Window(title="CleanClip", themename="cyborg")
-    app.geometry("260x140")
+    app.geometry("300x180")
     app.resizable(False, False)
 
     main_frame = ttk.Frame(app, padding=12)
@@ -89,18 +100,19 @@ def run() -> None:
         main_frame,
         text="⚙",
         command=lambda: PatternEditor(app, load_patterns()),
-        width=2,
-        bootstyle="link",
+        width=3,
+        bootstyle="secondary-link",
+        style="Gear.TButton",
     )
     gear_button.pack(anchor=tk.NE)
 
-    message_label = ttk.Label(
-        main_frame,
-        text="Sanitize clipboard contents",
-        anchor="center",
+    style = ttk.Style()
+    style.configure("Gear.TButton", font=("Segoe UI Symbol", 16))
+    style.configure(
+        "Clean.TButton",
         font=("Helvetica", 12, "bold"),
+        padding=(18, 14),
     )
-    message_label.pack(pady=(12, 16))
 
     def on_click() -> None:
         try:
@@ -131,12 +143,13 @@ def run() -> None:
 
     sanitize_button = ttk.Button(
         main_frame,
-        text="Clean Clipboard",
+        text="Sanitize Clipboard Contents",
         command=on_click,
-        bootstyle="success",
-        width=18,
+        bootstyle="success-outline",
+        style="Clean.TButton",
+        width=22,
     )
-    sanitize_button.pack(pady=(0, 20))
+    sanitize_button.pack(pady=(20, 12))
 
     app.mainloop()
 
